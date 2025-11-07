@@ -147,9 +147,11 @@ if USE_SPACES:
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',  # 1 день
     }
-    AWS_DEFAULT_ACL = 'public-read'
+    AWS_DEFAULT_ACL = None  # Используем настройки Space по умолчанию
     AWS_QUERYSTRING_AUTH = False
     AWS_S3_FILE_OVERWRITE = False
+    AWS_S3_VERIFY = True  # Проверка SSL сертификатов
+    AWS_S3_USE_SSL = True  # Использовать HTTPS
     
     # Media files - используем кастомное хранилище для Spaces
     DEFAULT_FILE_STORAGE = 'backend.storage_backends.MediaStorage'

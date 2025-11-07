@@ -1,16 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-
-
-def get_media_storage():
-    """Возвращает правильный storage для медиа файлов"""
-    from django.conf import settings
-    if settings.USE_SPACES:
-        from backend.storage_backends import MediaStorage
-        return MediaStorage()
-    from django.core.files.storage import FileSystemStorage
-    return FileSystemStorage()
+from django.core.files.storage import default_storage
 
 class Category(models.Model):
     # Добавляем created_at с default значением
@@ -53,8 +44,8 @@ class CategoryTranslation(models.Model):
 class Book(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name=_("Категория"))
     year = models.PositiveIntegerField(verbose_name=_("Год издания"))
-    pdf_file = models.FileField(upload_to='books/pdfs/%Y/%m/%d/', storage=get_media_storage, verbose_name=_("PDF файл"))
-    cover_image = models.ImageField(upload_to='books/covers/%Y/%m/%d/', storage=get_media_storage, blank=True, null=True, verbose_name=_("Обложка книги"))
+    pdf_file = models.FileField(upload_to='books/pdfs/%Y/%m/%d/', verbose_name=_("PDF файл"))
+    cover_image = models.ImageField(upload_to='books/covers/%Y/%m/%d/', blank=True, null=True, verbose_name=_("Обложка книги"))
     is_active = models.BooleanField(default=True, verbose_name=_("Активна"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Создано"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Обновлено"))

@@ -17,7 +17,7 @@ class StaticStorage(S3Boto3Storage):
 class MediaStorage(S3Boto3Storage):
     """Хранилище для медиа файлов (загружаемые пользователями файлы)"""
     location = 'media'  # Сохраняем файлы в папку media/ в Spaces
-    default_acl = None  # Используем настройки Space по умолчанию
+    default_acl = 'public-read'  # Файлы доступны для чтения всем
     file_overwrite = False  # Не перезаписывать файлы с одинаковыми именами
     
     # Отключаем gzip для медиа файлов (PDF, изображения)

@@ -32,12 +32,14 @@ class BookSerializer(serializers.ModelSerializer):
     description = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
     pdf_url = serializers.SerializerMethodField()
+    cover_image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Book
         fields = [
             'id', 'category', 'category_name', 
-            'year', 'pdf_file', 'pdf_url', 'title', 'author', 'description',
+            'year', 'pdf_file', 'pdf_url', 'cover_image', 'cover_image_url',
+            'title', 'author', 'description',
             'is_active', 'created_at', 'translations'
         ]
     
@@ -70,4 +72,13 @@ class BookSerializer(serializers.ModelSerializer):
             else:
                 # Fallback - убедитесь что нет лишних префиксов
                 return f"http://localhost:8000{obj.pdf_file.url}"
+        return None
+    
+    def get_cover_image_url(self, obj):
+        if obj.cover_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.cover_image.url)
+            else:
+                return f"http://localhost:8000{obj.cover_image.url}"
         return None

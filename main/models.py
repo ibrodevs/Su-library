@@ -44,6 +44,7 @@ class Book(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name=_("Категория"))
     year = models.PositiveIntegerField(verbose_name=_("Год издания"))
     pdf_file = models.FileField(upload_to='books/pdfs/%Y/%m/%d/', verbose_name=_("PDF файл"))
+    cover_image = models.ImageField(upload_to='books/covers/%Y/%m/%d/', blank=True, null=True, verbose_name=_("Обложка книги"))
     is_active = models.BooleanField(default=True, verbose_name=_("Активна"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Создано"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Обновлено"))

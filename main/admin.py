@@ -74,6 +74,7 @@ class BookAdmin(admin.ModelAdmin):
         'get_russian_author', 
         'get_category_russian_name',
         'year', 
+        'has_cover_image',
         'is_active',
         'created_at'
     ]
@@ -88,7 +89,7 @@ class BookAdmin(admin.ModelAdmin):
     inlines = [BookTranslationInline]
     fieldsets = [
         (_("Основная информация"), {
-            'fields': ['category', 'year', 'pdf_file', 'is_active']
+            'fields': ['category', 'year', 'pdf_file', 'cover_image', 'is_active']
         }),
         (_("Даты"), {
             'fields': ['created_at', 'updated_at'],
@@ -111,6 +112,11 @@ class BookAdmin(admin.ModelAdmin):
         return obj.category.get_name('ru')
     get_category_russian_name.short_description = _("Категория")
     get_category_russian_name.admin_order_field = 'category__translations__name'
+    
+    def has_cover_image(self, obj):
+        return bool(obj.cover_image)
+    has_cover_image.short_description = _("Есть обложка")
+    has_cover_image.boolean = True
     
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)

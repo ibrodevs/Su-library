@@ -20,13 +20,9 @@ class MediaStorage(S3Boto3Storage):
     # Отключаем gzip для медиа файлов (PDF, изображения)
     gzip = False
     
-    # Важно: отключаем проверку существования перед загрузкой
-    # Это решает проблему с 403 Forbidden при head_object
-    def get_available_name(self, name, max_length=None):
+    def exists(self, name):
         """
-        Переопределяем метод, чтобы не проверять существование файла
-        перед загрузкой (избегаем head_object запрос)
+        Переопределяем метод exists, чтобы избежать head_object запроса,
+        который вызывает 403 Forbidden из-за прав доступа к Space
         """
-        if self.file_overwrite:
-            return name
-        return super(S3Boto3Storage, self).get_available_name(name, max_length)
+        return False  # Всегда возвращаем False, чтобы файл загружался

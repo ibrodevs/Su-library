@@ -12,7 +12,7 @@ print("STORAGE CONFIGURATION CHECK")
 print("=" * 50)
 
 print(f"\n1. USE_SPACES: {settings.USE_SPACES}")
-print(f"2. DEFAULT_FILE_STORAGE: {settings.DEFAULT_FILE_STORAGE}")
+print(f"2. STORAGES: {settings.STORAGES}")
 print(f"3. MEDIA_URL: {settings.MEDIA_URL}")
 
 # Проверяем что используют поля модели

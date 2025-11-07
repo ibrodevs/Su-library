@@ -128,9 +128,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Whitenoise для обслуживания статических файлов
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Настройки для DigitalOcean Spaces (только для медиа файлов)
 USE_SPACES = config('USE_SPACES', default=False, cast=bool)
 
@@ -153,11 +150,26 @@ if USE_SPACES:
     AWS_S3_VERIFY = True  # Проверка SSL сертификатов
     AWS_S3_USE_SSL = True  # Использовать HTTPS
     
-    # Media files - используем кастомное хранилище для Spaces
-    DEFAULT_FILE_STORAGE = 'backend.storage_backends.MediaStorage'
+    # Media files - STORAGES API (Django 5.1+)
+    STORAGES = {
+        'default': {
+            'BACKEND': 'backend.storage_backends.MediaStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'  # Папка media в Spaces
 else:
     # Локальные медиа файлы для разработки
+    STORAGES = {
+        'default': {
+            'BACKEND': 'django.core.files.storage.FileSystemStorage',
+        },
+        'staticfiles': {
+            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        },
+    }
     MEDIA_URL = '/media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

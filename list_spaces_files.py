@@ -28,8 +28,14 @@ print(f"Endpoint: {settings.AWS_S3_ENDPOINT_URL}")
 print()
 
 try:
-    # Получаем список объектов
-    response = s3_client.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
+    # Получаем список ВСЕХ объектов (включая в папках)
+    response = s3_client.list_objects_v2(
+        Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+        MaxKeys=1000
+    )
+    
+    print(f"HTTP Status: {response['ResponseMetadata']['HTTPStatusCode']}")
+    print(f"Bucket exists and accessible: ✅\n")
     
     if 'Contents' in response:
         print(f"Найдено файлов: {len(response['Contents'])}\n")
@@ -42,8 +48,13 @@ try:
             print()
     else:
         print("❌ Space пустой - файлов не найдено")
+        print("\nВозможные причины:")
+        print("1. Файлы не загружаются из-за ошибки")
+        print("2. Права доступа к Bucket ограничены")
+        print("3. Bucket действительно пустой")
         
 except Exception as e:
     print(f"❌ Ошибка: {e}")
+    print(f"Тип ошибки: {type(e).__name__}")
 
 print("=" * 60)

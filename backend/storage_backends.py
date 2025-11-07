@@ -13,7 +13,7 @@ class StaticStorage(S3Boto3Storage):
 
 class MediaStorage(S3Boto3Storage):
     """Хранилище для медиа файлов (загружаемые пользователями файлы)"""
-    location = 'media'  # Все файлы будут в папке media/
+    location = ''  # Пустой location, так как MEDIA_URL уже содержит /media/
     default_acl = None  # Используем настройки Space по умолчанию
     file_overwrite = False  # Не перезаписывать файлы с одинаковыми именами
     

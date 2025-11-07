@@ -155,7 +155,7 @@ if USE_SPACES:
     
     # Media files - используем кастомное хранилище для Spaces
     DEFAULT_FILE_STORAGE = 'backend.storage_backends.MediaStorage'
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/media/'  # С /media/ в URL
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'  # Без /media/ так как файлы уже в корне
 else:
     # Локальные медиа файлы для разработки
     MEDIA_URL = '/media/'

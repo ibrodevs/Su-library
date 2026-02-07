@@ -2,6 +2,23 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.core.files.storage import default_storage
+from django.core.exceptions import ValidationError
+
+
+def validate_pdf_file_size(value):
+    """Валидация размера PDF файла"""
+    filesize = value.size
+    if filesize > 50 * 1024 * 1024:  # 50 MB
+        raise ValidationError(_('PDF файл не должен превышать 50 MB'))
+    return value
+
+
+def validate_image_file_size(value):
+    """Валидация размера изображения"""
+    filesize = value.size
+    if filesize > 10 * 1024 * 1024:  # 10 MB
+        raise ValidationError(_('Изображение не должно превышать 10 MB'))
+    return value
 
 class Category(models.Model):
     # Добавляем created_at с default значением
@@ -44,8 +61,18 @@ class CategoryTranslation(models.Model):
 class Book(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name=_("Категория"))
     year = models.PositiveIntegerField(verbose_name=_("Год издания"))
-    pdf_file = models.FileField(upload_to='books/pdfs/%Y/%m/%d/', verbose_name=_("PDF файл"))
-    cover_image = models.ImageField(upload_to='books/covers/%Y/%m/%d/', blank=True, null=True, verbose_name=_("Обложка книги"))
+    pdf_file = models.FileField(
+        upload_to='books/pdfs/%Y/%m/%d/', 
+        validators=[validate_pdf_file_size],
+        verbose_name=_("PDF файл")
+    )
+    cover_image = models.ImageField(
+        upload_to='books/covers/%Y/%m/%d/', 
+        blank=True, 
+        null=True, 
+        validators=[validate_image_file_size],
+        verbose_name=_("Обложка книги")
+    )
     is_active = models.BooleanField(default=True, verbose_name=_("Активна"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Создано"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Обновлено"))

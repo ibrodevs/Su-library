@@ -13,6 +13,12 @@ import os
 import dj_database_url
 from decouple import config, Csv
 from pathlib import Path
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),   # access живёт 24 часа
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),       # refresh живёт 30 дней
+}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-x@+#o6)za8rtb7lv!cd+y5+f*k11&jl*pqd$7dum%nkxx%pq2z')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,su-library-back-d2d8d21af2e4.herokuapp.com', cast=Csv())
 
@@ -51,6 +57,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'storages',  # для DigitalOcean Spaces
     'main',  # ваше приложение
+    'users',  
 ]
 
 MIDDLEWARE = [
@@ -208,4 +215,11 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
+AUTH_USER_MODEL = 'users.User'

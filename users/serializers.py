@@ -31,14 +31,27 @@ class LoginSerializer(serializers.Serializer):
 
 # --- Сериализатор для профиля ---
 class ProfileSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name', 'email', 'group', 'course', 'is_active', 'is_staff', 'password',]
         # Если в модели есть group и course — добавь их:
         # fields = ['first_name', 'last_name', 'email', 'group', 'course']
-
+        read_only_fields = ['is_active', 'is_staff']
 
 # --- Сериализатор для смены пароля ---
 class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
-    new_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, min_length=6)
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Старый пароль неверный")
+        return value
+
+    def validate_new_password(self, value):
+        if len(value) < 6:
+            raise serializers.ValidationError("Новый пароль должен быть минимум 6 символов")
+        return value

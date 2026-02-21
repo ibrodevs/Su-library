@@ -1,11 +1,13 @@
 # main/views.py
 from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Book, Category
 from .serializers import BookSerializer, CategorySerializer
 
 class BookListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
     serializer_class = BookSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category', 'year']
@@ -28,6 +30,7 @@ class BookListView(generics.ListAPIView):
         return Response(serializer.data)
 
 class CategoryListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
     serializer_class = CategorySerializer
     
     def get_queryset(self):

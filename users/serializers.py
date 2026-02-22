@@ -19,10 +19,12 @@ class LoginSerializer(serializers.Serializer):
         if not email or not password:
             raise serializers.ValidationError("Email и пароль обязательны.")
 
-        # Пытаемся найти пользователя
-        user = authenticate(username=email, password=password)
-
-        if user is None:
+        # Пытаемся найти пользователя по email (USERNAME_FIELD='email')
+        try:
+            user = User.objects.get(email=email)
+            if not user.check_password(password):
+                raise serializers.ValidationError("Неверный email или пароль.")
+        except User.DoesNotExist:
             raise serializers.ValidationError("Неверный email или пароль.")
 
         data['user'] = user

@@ -223,3 +223,8 @@ REST_FRAMEWORK = {
     ),
 }
 AUTH_USER_MODEL = 'users.User'
+
+# Кастомный бэкенд аутентификации для работы с email в качестве USERNAME_FIELD
+AUTHENTICATION_BACKENDS = [
+    'users.backends.EmailBackend',  # Аутентификация по email
+]
